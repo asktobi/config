@@ -1,3 +1,5 @@
-*
-!wpastart.sh
-!.gitignore
+*.gitignore
+*.out
+*.o
+
+

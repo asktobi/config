@@ -1,0 +1,34 @@
+#! /bin/sh
+
+
+print_mem(){
+	
+	memfree=$(($(grep -m1 'MemAvailable:' /proc/meminfo | awk '{print $2}') / 1024))
+	echo -e "$memfree"
+}
+
+print_bat(){
+	
+	hash acpi || return 0
+	onl="$(acpi -V | grep "on-line")"
+	charge="$(cat /sys/class/power_supply/BAT1/capacity)"
+	if [[ ( -z $onl && ${charge} -gt 20 ) ]]; then
+		echo -e "${charge}"
+	elif [[ ( -z $onl && ${charge} -le 20 ) ]]; then
+		echo -e "${charge}"
+	else
+		echo -e "+ ${charge}"
+	fi
+}
+
+print_date(){
+	echo -e "$(date "+%a %d/%m/%y %H:%M")"	
+	
+}
+
+while : 
+do
+	xsetroot -name "[$(print_mem) mb] [$(print_bat) %] [$(print_date)]"
+	sleep 1
+
+done
