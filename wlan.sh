@@ -8,7 +8,7 @@ E_NOTROOT=87 # notroot exit error
 # Run as root.
 if [ "$UID" -ne 0 ]
 then
-	echo "[wlan.sh] Must be root!"
+	echo "[$0] Must be root!"
 	exit $E_NOTROOT
 fi  
 
@@ -25,7 +25,7 @@ then
 
 fi
 
-echo "[wlan.sh] Using $WPA_CONFIG@$INTERFACE."
+echo "[$0] Using $WPA_CONFIG@$INTERFACE."
 
 ip link set $INTERFACE down
 macchanger -r $INTERFACE
