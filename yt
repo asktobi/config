@@ -1,0 +1,7 @@
+#!/bin/bash
+# jon 2021
+# bin/yt
+
+youtube-dl -x --audio-format opus $1
+
+

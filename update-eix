@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 if [[-e /var/cache/eix/portage.eix ]]; then
 	cp -a /var/cache/eix/portage.eix /var/cache/eix/previous.eix;
 	cp -a /var/cache/eix/portage.eix /var/cache/eix/portage.$(date "+%d-%m-%y").eix;

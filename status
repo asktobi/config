@@ -1,4 +1,6 @@
-#! /bin/sh
+#!/bin/sh
+# jon 2021
+# bin/status
 
 
 print_mem(){

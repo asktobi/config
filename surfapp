@@ -1,1 +1,4 @@
+#!/bin/bash
+# jon 2021
+# bin/surfapp
 surf -c ~/whatsapp/.cookie -F -S -b https://web.whatsapp.com

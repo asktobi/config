@@ -1,6 +1,8 @@
 #!/bin/bash
+# jon 2021
+# bin/wpa
 
-HOME="/etc/wpa_supplicant/master.conf" # Default Accesspoint
+config_default="/etc/wpa_supplicant/master.conf" # Default Accesspoint
 
 E_NOTROOT=87 # notroot exit error
 
@@ -14,9 +16,9 @@ fi
 
 if [ -n "$1" ]
 then
-  accesspoint=$1
+  config=$1
 else  
-  accesspoint=$HOME # Defaults to $HOME
+  config=$config_default
 fi  
 
 

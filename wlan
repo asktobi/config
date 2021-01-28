@@ -1,0 +1,49 @@
+#!/bin/bash
+# jon 2021
+# bin/wlan
+
+# using wpa_supplicant 
+
+wpa_config="/etc/wpa_supplicant/master.conf" # networks 
+interface="wlp2s0" # interface
+
+#if [ -z wpa_config ]
+#then	ip addr
+#	echo "[$0] What interface ?"
+#	printf "${PS1@P}"
+#	read interface
+#fi
+
+E_NOTROOT=87 # notroot exit error
+
+# Run as root.
+if [ "$UID" -ne 0 ]
+then
+	echo "[$0] Must be root!"
+	exit $E_NOTROOT
+fi  
+
+# Get config if Argument exists
+if [ -n "$1" ]
+then
+	wpa_config=$1
+
+	# Get interface if Arguments exists
+	if [ -n "$2" ]
+	then
+		interface=$2
+	fi
+
+fi
+
+echo "[$0] Using $wpa_config@$interface."
+
+ip link set $interface down
+macchanger -r $interface
+ip link set $interface up
+
+wpa_supplicant -B -i $interface -c $wpa_config
+
+wpa_cli
+
+dhcpcd $interface
