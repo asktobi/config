@@ -2,6 +2,33 @@
 # jon 2021
 # bin/yt
 
-youtube-dl -x --audio-format opus $1
+set -e
 
+function help
+{
+	2>&1 echo "[$0] yt [directory] [url]"
+}
 
+if [ -z $1 ]
+then
+	help
+	exit 1
+fi
+
+dwn_path="$HOME/$1/"
+
+if [ -z $2 ]
+then
+	url=$(xclip -sel clip -o)
+else
+	url=$2
+fi
+
+pushd $dwn_path
+if [ "$1" == "music" ]
+then
+	youtube-dl -xo $dwn_path/'%(title)s.%(ext)s' --audio-format best $url
+else
+	youtube-dl -o $dwn_path/'%(title)s.%(ext)s' --audio-format best --video-format best $url
+fi
+popd
