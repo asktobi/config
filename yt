@@ -29,6 +29,6 @@ if [ "$1" == "music" ]
 then
 	youtube-dl -xo $dwn_path/'%(title)s.%(ext)s' --audio-format best $url
 else
-	youtube-dl -o $dwn_path/'%(title)s.%(ext)s' --audio-format best --video-format best $url
+	youtube-dl -o $dwn_path/'%(title)s-%(id)s-%(uploader)s.%(ext)s' --format best $url
 fi
 popd
