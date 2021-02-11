@@ -15,7 +15,7 @@ $pkg_install --pretend $defaults $pkg
 echo "$0: Emerge Package ($pkg) ?"
 read $response
 
-if [ -z $response  ]
+if [ $response == ]
 then
 	echo "$0: Not emerging ($pkg)_$response_"
 	exit 1
