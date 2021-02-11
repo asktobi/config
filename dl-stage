@@ -4,9 +4,12 @@
 
 
 target=$1
+architecture=amd64
+diff=hardened
 
 # Downloading Tarball
-wget -r -np -nH --cut-dirs=7 -P $target -A stage3-x86-hardened-[0-9]*T[0-9]*Z.tar.xz* https://ftp-stud.hs-esslingen.de/pub/Mirrors/gentoo/releases/amd64/autobuilds/current-stage3-amd64-hardened/
+wget -r -np -nH --cut-dirs=7 -P $target -A stage3-$architecture-$diff-[0-9]*T[0-9]*Z.tar.xz* https://ftp-stud.hs-esslingen.de/pub/Mirrors/gentoo/releases/$architecture/autobuilds/current-stage3-$architecture-$diff/
+
 
 # Downloading Keys
 wget -O- https://gentoo.org/.well-known/openpgpkey/hu/wtktzo4gyuhzu8a4z5fdj3fgmr1u6tob?l=releng | gpg --import

@@ -2,6 +2,8 @@
 # jon 2020
 # bin/imp-bin
 
+set -eu
+
 target=$1
 bin_db=$2
 

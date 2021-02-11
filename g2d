@@ -33,7 +33,7 @@ then
 	settings=dsk
 fi
 
-uset=sets/$settings
+uset=$HOME/sets/$settings
 
 echo "[$0] using settings directory $uset"
 
@@ -46,7 +46,7 @@ fi
 if [ ! -e $uset/stages/stage3*.tar.xz ]
 then
 	echo "$0: Can\'t find stage3 tarball, now downloading"
-	./dl-stage.sh $uset/stages/ || exit 1
+	dl-stage $uset/stages/ || exit 1
 	rm $uset/stages/.dirty
 fi
 
@@ -66,7 +66,7 @@ then
 		if [ $response = "r" ]
 		then
 			echo "[WARNING] Redownloading the tarball"
-			./dl-stage.sh $uset/stages/ || exit 1
+			dl-stage $uset/stages/ || exit 1
 			rm $uset/stages/.dirty
 		else
 			echo "[ERROR] Dirty flag can not be ignored!"
@@ -86,7 +86,7 @@ then
 	then
 		bin_import=$response
 	fi
-	./import-bin.sh $target $bin_import
+	imp-bin $target $bin_import
 fi
 
 echo "[$0] EXTRACTING BASE SYSTEM"
@@ -99,7 +99,7 @@ if [ -e $uset/chroot.sh ]
 then
 	cp $uset/chroot.sh $target
 else
-	cp chroot.sh $target
+	cp $(which g2c) $target
 fi
 
 cp $uset/pkg.lst $target
