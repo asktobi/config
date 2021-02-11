@@ -1,0 +1,12 @@
+#!/bin/bash
+# jon 2020
+# bin/imp-bin
+
+target=$1
+bin_db=$2
+
+echo "[$0] IMPORTING BINARYS"
+
+mkdir -p $target/var/cache/binpkgs
+cp -rf $bin_db $target/var/cache/binpkgs 
+
