@@ -1,5 +1,5 @@
 #!/bin/bash
-# jon 2021
+# jon 2015
 # bin/ath-workaround
 
 path="/lib64/firmware/ath10k/QCA9377/hw1.0/firmware-6.bin" # Path to problematic firmware
