@@ -97,7 +97,7 @@ echo "[$0] COPYING INSTALLER FILES TO DISK"
 
 if [ -e $uset/chroot.sh ]
 then
-	cp $uset/chroot.sh $target
+	cp $uset/g2c $target
 else
 	cp $(which g2c) $target
 fi

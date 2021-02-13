@@ -1,6 +1,6 @@
 #!/usr/bin/tcc -run
 // jon 2021
-// bin/test
+// bin/tcp
 // tcp tunnel
 
 #include <stdio.h>

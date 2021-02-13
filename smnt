@@ -1,0 +1,27 @@
+#!/bin/bash
+# jon 2021
+# bin/smnt
+# Secure mount
+
+set -eu
+
+device=$1
+mntpoint=$2
+num=0
+
+if [[ ! -e  $device || ! -d $mntpoint ]]
+then
+	1>&2 echo "$0: Device has to exist and Mountpoint has to be a directory"
+	exit 1
+fi
+
+while [ -e /dev/mapper/smnt$num ]
+do
+	num+=1
+done
+
+cryptsetup luksOpen $device smnt$num
+
+mount /dev/mapper/smnt$num $mntpoint
+
+exit 0
