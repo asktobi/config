@@ -1,7 +1,7 @@
 #!/bin/bash
 # jon 2021
 # bin/smnt
-# Secure Mount
+# Secure mount
 
 set -eu
 

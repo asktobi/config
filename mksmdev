@@ -1,6 +1,7 @@
 #!/bin/bash
 # jon 2021
-# bin/mksmnt
+# bin/mksmdev
+# Make Secure Mirrored Device
 
 set -eu
 

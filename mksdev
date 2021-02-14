@@ -1,0 +1,24 @@
+#!/bin/bash
+# jon 2021
+# bin/mksdev
+# Make Secure Device
+
+set -eu
+
+device=$1
+fs=btrfs
+fs_opt="-m dup -d dup"
+num=0
+
+while [[ ! -e "/dev/mapper/smnt$num" && $num -le 256 ]]
+do
+	num+=1
+done
+
+cryptsetup luksFormat $device
+cryptsetup luksOpen $device smnt$num
+
+mkfs.$fs $fs_opt /dev/mapper/smnt$num
+
+cryptsetup luksClose smnt$num
+
