@@ -1,0 +1,39 @@
+#!/usr/bin/tcc -run
+// jon 2021
+// bin/rev
+// Reverse String
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+void usage()
+{
+	fprintf(stderr,"[bin/rev] rev (STRING)\n Reverses String\n");
+	return;
+}
+
+int main(int argc, char **argv)
+{
+	int i;
+	size_t strlength;
+	char * string;
+	char * rstring;
+
+	if (argc <= 1 || argc >= 3)
+	{
+		fprintf(stderr,"bin/rev: Only one Argument!\n");
+		usage();
+		return 1;
+	}
+	string = argv[1];
+	strlength = strlen(string);
+	rstring = (char *) malloc(strlength);
+	for (i = 0;i <= (int) strlength;i++)
+	{
+		printf("%c",string[((int)strlength)-i]);
+	}
+	free(rstring);
+	return 0;
+}
+
