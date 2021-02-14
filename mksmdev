@@ -5,20 +5,38 @@
 
 set -eu
 
-device=$1
-fs=btrfs
-fs_opt="-m dup -d dup"
-num=0
+device0=$1
+device1=$2
 
-while [[ ! -e "/dev/mapper/smnt$num" && $num -le 256 ]]
+num0=0
+num1=0
+
+fs=btrfs
+fs_opt="-m raid1 -d raid1"
+
+echo "[mksmdev] Password for the Secure Mirrored Device >"
+read -s password
+
+# Device 1
+while [[ ! -e "/dev/mapper/smdev$num0" && $num0 -le 256 ]]
 do
-	num+=1
+	num0+=1
 done
 
-cryptsetup luksFormat $device
-cryptsetup luksOpen $device smnt$num
+echo $password | cryptsetup luksFormat $device0
+cryptsetup luksOpen $device0 sdev$num0
 
-mkfs.$fs $fs_opt /dev/mapper/smnt$num
+# Device 2
+while [[ ! -e "/dev/mapper/smdev$num1" && $num1 -le 256 ]]
+do
+	num1+=1
+done
 
-cryptsetup luksClose smnt$num
+rev $password | cryptsetup luksFormat $device1
+cryptsetup luksOpen $device1 sdev$num1
+
+
+mkfs.$fs $fs_opt /dev/mapper/sdev$num0 /dev/mapper/sdev$num1
+
+cryptsetup luksClose sdev$num
 
