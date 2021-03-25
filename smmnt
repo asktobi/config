@@ -1,13 +1,17 @@
 #!/bin/bash
 # jon 2021
-# bin/smnt
-# Secure mount
+# bin/smmnt
+# Secure Mirrored Mount
 
 set -eu
 
-device=$1
-mntpoint=$2
-num=0
+device0=$1
+device1=$2
+
+num0=0
+num1=1
+
+mntpoint=$3
 
 if [[ ! -e  $device || ! -d $mntpoint ]]
 then

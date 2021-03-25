@@ -33,6 +33,7 @@ int main(int argc, char **argv)
 	{
 		printf("%c",string[((int)strlength)-i]);
 	}
+	printf("\n");
 	free(rstring);
 	return 0;
 }
