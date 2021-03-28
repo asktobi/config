@@ -40,12 +40,15 @@ read -s password
 
 echo "[$(basename $0)] Setup $device0 as $crypt_dev0"
 echo "$password" | cryptsetup luksFormat $device0
-echo "$password" | cryptsetup luksOpen $device0 sdev$num0
+echo "$password" | cryptsetup open $device0 $(basename $crypt_dev0)
 
-if [ -e $2 ]
+
+if [ ! -e "$dev_start$2"  ]
 then
-	device1="$dev_start$2"
+	fs_raid="dup"
+else
 	fs_raid="raid1"
+	device1="$dev_start$2"
 
 	num1=$num0 
 	# autofind free devnode
@@ -58,19 +61,21 @@ then
 
 	echo "[$(basename $0)] Setup $device1 as $crypt_dev1"
 	rev "$password" | cryptsetup luksFormat $device1
-	rev "$password" | cryptsetup luksOpen $device1 smdev$num1
+	rev "$password" | cryptsetup open $device1 $(basename $crypt_dev1)
 
-else
-	fs_raid="dup"
 fi
 
 mkfs.$fs $fs_opt -m $fs_raid -d $fs_raid $crypt_dev0 $crypt_dev1
 
+
+echo "[$(basename $0)] Close Cryptsetup ? [Enter]"
+read response
+
 sync
 
-if [ ! "" == "$crypt_dev1" ]
-then
-	cryptsetup luksClose $crypt_dev1
-fi
-cryptsetup luksClose $crypt_dev0
+cryptsetup close $crypt_dev0
 
+if [ -e $device1 ]
+then
+	cryptsetup close $crypt_dev1
+fi

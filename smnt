@@ -48,7 +48,7 @@ echo "[$(basename $0)] Password for the Secure Device >"
 read -s password
 
 echo "[$(basename $0)] Setup $device0 as $crypt_dev0"
-echo "$password" | cryptsetup luksOpen $device0 sdev$num0
+echo "$password" | cryptsetup open $device0 $(basename $crypt_dev0)
 
 if [ -e "$dev_start$3" ]
 then
@@ -64,7 +64,7 @@ then
 	crypt_dev1="/dev/mapper/smdev$num1"
 
 	echo "[$(basename $0)] Setup $device1 as $crypt_dev1"
-	rev "$password" | cryptsetup luksOpen $device1 smdev$num1
+	rev "$password" | cryptsetup open $device1 $(basename $crypt_dev1)
 
 fi
 
@@ -75,9 +75,10 @@ echo "[$(basename $0)] Unmounting [Enter]"
 read -s response
 sync
 
+umount $mntpnt
+cryptsetup close $crypt_dev0
+
 if [ ! "" == "$crypt_dev1" ]
 then
-	cryptsetup luksClose $crypt_dev1
+	cryptsetup close $crypt_dev1
 fi
-cryptsetup luksClose $crypt_dev0
-
