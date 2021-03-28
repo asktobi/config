@@ -1,50 +1,76 @@
 #!/bin/bash
 # jon 2021
-# bin/mksmdev
-# Make Secure Mirrored Device
+# bin/mksdev
+# Make Secure Device
 
-#set -eu
+# mksdev [dev0]
+# mksdev [dev0] [dev1]
 
-device0=$1
+set -e
 
-if [ ! "" == $2 ]
+if [ -e $1 ]
 then
-	device1=$2
+	device0="$1"
+else
+	dev_start="/dev/" # TODO Implement local dir 
+	device0="$dev_start$1"
+	if [ ! -e "$device0" ]
+	then
+		2>&1 echo "[$(basename $0)] -2 No valid Device"
+		exit -2
+	fi
+
 fi
 
+
 num0=0
-num1=1
-
-fs=btrfs
-fs_opt="-m raid1 -d "
-fs_opt="-m raid1 -d raid1"
-
-echo "[mksmdev] Password for the Secure Mirrored Device >"
-read -s password
-
-# Device 1
-while [[ -e "/dev/mapper/smdev$num0" ]]
+# autofind next free num
+while [[ -e "/dev/mapper/sdev$num0" ]]
 do
 	num0+=1
 done
 
-echo "[mksmdev] Setup $device0 as smdev$num0"
+crypt_dev0="/dev/mapper/sdev$num0"
+
+fs=btrfs
+fs_opt=""
+
+echo "[$(basename $0)] Password for the Secure Device >"
+read -s password
+
+echo "[$(basename $0)] Setup $device0 as $crypt_dev0"
 echo "$password" | cryptsetup luksFormat $device0
-echo "$password" | cryptsetup luksOpen $device0 smdev$num0
+echo "$password" | cryptsetup luksOpen $device0 sdev$num0
 
-# Device 2
-while [[ -e "/dev/mapper/smdev$num1" ]]
-do
-	num1+=1
-done
+if [ -e $2 ]
+then
+	device1="$dev_start$2"
+	fs_raid="raid1"
 
-echo "[mksmdev] Setup $device1 as smdev$num1"
-rev "$password" | cryptsetup luksFormat $device1
-rev "$password" | cryptsetup luksOpen $device1 smdev$num1
+	num1=1 
+	# autofind next free num
+	while [[ -e "/dev/mapper/smdev$num1" ]]
+	do
+		num1+=1
+	done
+	
+	crypt_dev1="/dev/mapper/smdev$num1"
 
+	echo "[$(basename $0)] Setup $device1 as $crypt_dev1"
+	rev "$password" | cryptsetup luksFormat $device1
+	rev "$password" | cryptsetup luksOpen $device1 smdev$num1
 
-mkfs.$fs $fs_opt /dev/mapper/smdev$num0 /dev/mapper/smdev$num1
+else
+	fs_raid="dup"
+fi
 
-cryptsetup luksClose smdev$num0
-cryptsetup luksClose smdev$num1
+mkfs.$fs $fs_opt -m $fs_raid -d $fs_raid $crypt_dev0 $crypt_dev1
+
+sync
+
+if [ ! "" == "$crypt_dev1" ]
+then
+	cryptsetup luksClose $crypt_dev1
+fi
+cryptsetup luksClose $crypt_dev0
 
