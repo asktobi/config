@@ -47,7 +47,7 @@ then
 	device1="$dev_start$2"
 	fs_raid="raid1"
 
-	num1=1 
+	num1=$num0 
 	# autofind free devnode
 	while [[ -e "/dev/mapper/smdev$num1" ]]
 	do

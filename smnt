@@ -10,18 +10,32 @@ set -e
 
 mntpnt=$1
 
-if [ -e ""]
-device0=$2
-device1=$3
+if [ -e $1 ]
+then
+	device0="$1"
+else
+	dev_start="/dev/" # TODO Implement local dir 
+	device0="$dev_start$2"
+	if [ ! -e "$device0" ]
+	then
+		2>&1 echo "[$(basename $0)] -2 No valid Device"
+		exit -2
+	fi
+
+fi
+
+device1="$dev_start$3"
+
+
 
 
 num0=0
 # autofind free devnode
-while [[ -e "/dev/mapper/smdev$num0" ]]
+while [[ -e "/dev/mapper/sdev$num0" ]]
 do
 	num0+=1
 done
-num1=1
+num1=$num0
 # autofind free devnode
 while [[ -e "/dev/mapper/smdev$num1" ]]
 do
@@ -34,8 +48,8 @@ echo "[$(basename $0)] Password for the Secure Device >"
 read -s password
 
 
-echo "[$(basename $0)] Setup $device0 as smdev$num0"
-echo "$password" | cryptsetup luksOpen $device0 smdev$num0
+echo "[$(basename $0)] Setup $device0 as sdev$num0"
+echo "$password" | cryptsetup luksOpen $device0 sdev$num0
 
 
 echo "[$(basename $0)] Setup $device1 as smdev$num1"
