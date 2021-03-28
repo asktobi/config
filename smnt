@@ -1,27 +1,48 @@
 #!/bin/bash
 # jon 2021
 # bin/smnt
-# Secure Mount
+# Make Secure Mirrored Device
 
-set -eu
+# smnt [dev0] [dev1] [mount point]
 
-device=$1
-mntpoint=$2
-num=0
+#set -eu
 
-if [[ ! -e  $device || ! -d $mntpoint ]]
-then
-	1>&2 echo "$0: Device has to exist and Mountpoint has to be a directory"
-	exit 1
-fi
+device0=$1
+device1=$2
 
-while [ -e /dev/mapper/smnt$num ]
+mntpnt=$3
+
+num0=0
+num1=1
+
+fs=btrfs
+
+echo "[$0] Password for the Secure Mirrored Device >"
+read -s password
+
+# Device 1
+while [[ -e "/dev/mapper/smdev$num0" ]]
 do
-	num+=1
+	num0+=1
 done
 
-cryptsetup luksOpen $device smnt$num
+echo "[$0] Setup $device0 as smdev$num0"
+echo "$password" | cryptsetup luksOpen $device0 smdev$num0
 
-mount /dev/mapper/smnt$num $mntpoint
+# Device 2
+while [[ -e "/dev/mapper/smdev$num1" ]]
+do
+	num1+=1
+done
 
-exit 0
+echo "[$0] Setup $device1 as smdev$num1"
+rev "$password" | cryptsetup luksOpen $device1 smdev$num1
+
+mount -t $fs /dev/mapper/smdev$num0 $mntpnt 
+
+echo "Unmount ? [y]"
+read response
+
+cryptsetup luksClose smdev$num0
+cryptsetup luksClose smdev$num1
+
