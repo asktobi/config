@@ -6,15 +6,14 @@
 
 set -eu
 
-device=$1
-rlvm="$(cat /dev/urandom | tr -dc '[:alpha:]' | head -c 4)"
-rlvm=${rlvm^^}
+device="$1"
+host="$(cat /dev/urandom | tr -dc '[:alpha:]' | head -c 4)"
+host="${host^^}"
 rpart="root"
-rpath="/dev/$rlvm/$rpart"
+rpath="/dev/$host/$rpart"
 
 rnew="$(mktemp -d)"
-
-
+rlocal="/usr/local/bin/localinit"
 echo "Device $device will be wiped you sure ? yes|(no)"
 
 read response
@@ -39,20 +38,58 @@ n
 
 
 Y
+a
+1
 w
 q
 EOF
 
-pool ${device}2 into $rlvm
-pool $rpart from $rlvm 7G
+pool ${device}2 into $host
+pool $rpart from $host 7G
 
 mkfs.fat -F 32 ${device}1
 mkfs.btrfs -f -m dup -d single $rpath
 
 mkdir -p $rnew
 mount $rpath $rnew
+mount $rpath/boot ${device}1
 
-pacstrap $rnew base base-devel linux linux-firmware man-db man-pages texinfo lvm2 btrfs-progs vim
+pacstrap $rnew base base-devel linux linux-firmware man-db man-pages texinfo lvm2 btrfs-progs grub efibootmgr vim git
 
+genfstab -U $rnew >> $rnew/etc/fstab
 
+cat > $rnew$rlocal <<  EOF
+#!/bin/bash
+# tjh
+# bin/localinit
 
+ln -sf /usr/share/zoneinfo/Europa/Berlin /etc/localtime
+hwclock --systohc
+
+cat >> /etc/locale.gen << EOL
+en_US.UTF-8 UTF-8
+de_DE.UTF-8 UTF-8
+EOL
+
+locale-gen
+
+cat > /etc/locale.conf << EOL
+LANG=en_US.UTF-8
+EOL
+
+cat > /etc/vconsole.conf << EOL
+KEYMAP=de
+EOL
+
+cat > /etc/hostname << EOL
+${host}
+EOL
+
+mkinitcpio -P
+exit
+
+EOF
+
+arch-chroot $rnew $rlocal
+
+exit
