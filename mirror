@@ -1,5 +1,5 @@
-#! /bin/sh
-# jon 2015
+#!/bin/bash
+# tjh
 # bin/mirror
 
-xrandr --output HDMI1 --auto --same-as eDP1 
+xrandr --output  VGA-1 --auto --same-as HDMI-1

@@ -1,11 +1,14 @@
 #!/bin/bash
-# jon 2015
+# tjh
 # bin/wlan
 
 # using wpa_supplicant 
 
+# wlan [config]
+# wlan [config] [interface]
+
 wpa_config="/etc/wpa_supplicant/master.conf" # networks 
-interface="wlp2s0" # interface
+interface="wlp0s20u3" # interface
 
 #if [ -z wpa_config ]
 #then	ip addr
@@ -42,7 +45,7 @@ ip link set $interface down
 macchanger -r $interface
 ip link set $interface up
 
-wpa_supplicant -B -i $interface -c $wpa_config
+wpa_supplicant -D wext -B -i $interface -c $wpa_config
 
 wpa_cli
 

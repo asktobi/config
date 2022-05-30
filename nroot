@@ -1,10 +1,10 @@
 #!/bin/bash 
-# jon 2021
-# bin/nroot
+# tjh
+# bin/nroot [chroot root]
 
 set -eu
 
-if [ -z $1 ]
+if [ ! -d $1 ]
 then
 	2>&1 echo "$0: No Target"
 	exit 1

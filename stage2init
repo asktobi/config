@@ -1,0 +1,22 @@
+#!/bin/bash
+# tjh
+# bin/stage2init [stage3 tarball] [out.init] ([pkgs dir])
+
+set -e
+
+stage=$1
+init=$2
+
+if [ "$3" == "" ]
+	then
+		tmp="$(mktemp -d)"
+	else
+		tmp="$3"
+	if [ ! -e $tmp ]
+		then
+			tar xpvf $stage --xattrs-include='*.*' --numeric-owner -C $tmp
+	fi
+	
+fi
+
+find $tmp -print0 | cpio --null --create --verbose --format=newc | xz -9 > $init.cpio.xz

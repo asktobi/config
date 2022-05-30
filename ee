@@ -1,0 +1,32 @@
+#!/bin/bash 
+# tjh
+# Enter Enviroment
+# ee [target_dir]
+set -eu
+
+target_dir=$1
+
+if [ ! -d $target_dir ]
+then
+	echo "Target not Directory"
+	exit 1
+fi
+
+echo "Remounting / Rerouting"
+
+cp --dereference /etc/resolv.conf $target_dir/etc/resolv.conf
+
+mount --types proc /proc $target_dir/proc
+mount --rbind /sys $target_dir/sys
+mount --make-rslave $target_dir/sys
+mount --rbind /dev $target_dir/dev
+mount --make-rslave $target_dir/dev 
+
+chroot $target_dir /bin/bash
+
+echo "Exiting Chroot"
+
+umount -l $target_dir/dev{/shm,/pts,}
+umount -R $target_dir{/proc,/sys}
+
+echo "Cleanup OK"

@@ -1,12 +1,22 @@
 #!/bin/bash
-# jon 2021
+# tjh
 # bin/mksdev
 # Make Secure Device
 
 # mksdev [dev0]
 # mksdev [dev0] [dev1]
+# mksdev -h [header0] [dev0]
+# mksdev -h [header0] [dev0] [header1] [dev1]
 
 set -e
+
+if [ "$1" == "-h" ]
+then
+	fs_opt="-h"
+	header0="$2"
+	shift
+	shift
+fi
 
 if [ -e $1 ]
 then
@@ -33,15 +43,20 @@ done
 crypt_dev0="/dev/mapper/sdev$num0"
 
 fs=btrfs
-fs_opt=""
+
 
 echo "[$(basename $0)] Password for the Secure Device >"
 read -s password
 
 echo "[$(basename $0)] Setup $device0 as $crypt_dev0"
-echo "$password" | cryptsetup luksFormat $device0
+echo "$password" | cryptsetup $fs_opt $header0 luksFormat $device0
 echo "$password" | cryptsetup open $device0 $(basename $crypt_dev0)
 
+if [ "$fs_opt" == "-h" ]
+then 
+	header1=$2
+	shift
+fi
 
 if [ ! -e "$dev_start$2"  ]
 then
@@ -60,7 +75,7 @@ else
 	crypt_dev1="/dev/mapper/smdev$num1"
 
 	echo "[$(basename $0)] Setup $device1 as $crypt_dev1"
-	rev "$password" | cryptsetup luksFormat $device1
+	rev "$password" | cryptsetup $fs_opt $header1 luksFormat $device1
 	rev "$password" | cryptsetup open $device1 $(basename $crypt_dev1)
 
 fi

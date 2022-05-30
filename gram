@@ -1,0 +1,51 @@
+#!/bin/bash
+# tjh
+# Generate Fenster Ramdisks
+# gram [target_dir] [tarball] [compile_script]
+
+set -eu
+
+msg () {
+	echo "[$0] $1"
+}
+error () {
+
+	2>&1 msg "(E) $1"
+	exit 1
+}
+
+
+if [ ! -d "$1" ] ; then error "Target Directory not found"; else target_dir="$1";fi
+if [ ! -e "$2" ] ; then error "Tarball not found"; else tarball="$2";fi
+if [ ! -x "$(dirname $0)/$3" ] ; then msg "Compile Script not found using (bash)"; compile_script="/bin/bash"; else compile_script="/usr/local/bin/$3";fi
+
+msg "Resources OK"
+msg "Unrolling Tarball"
+
+tar xpvf $tarball --xattrs-include='*.*' --numeric-owner -C $target_dir
+
+mkdir -p $target_dir/etc/portage/repos.conf
+cp $target_dir/usr/share/portage/config/repos.conf $target_dir/etc/portage/repos.conf/gentoo.conf
+
+msg "Default Repository's copied"
+
+cp $(dirname $0)/* $target_dir/usr/local/bin/
+cp --dereference /etc/resolv.conf $target_dir/etc/resolv.conf
+
+msg "Enviroment Setup"
+
+mount --types proc /proc $target_dir/proc
+mount --rbind /sys $target_dir/sys
+mount --make-rslave $target_dir/sys
+mount --rbind /dev $target_dir/dev
+mount --make-rslave $target_dir/dev
+
+msg "Chrooting ..."
+
+chmod +x $target_dir/$compile_script
+chroot $target_dir $compile_script
+
+umount -l $target_dir/dev{/shm,/pts,}
+umount -R $target_dir{/proc,/sys}
+
+exit

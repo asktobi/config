@@ -1,0 +1,29 @@
+#!/bin/bash
+# tjh
+# End Gentoo
+# eg [target_dir]
+
+set -eu
+
+msg () {
+	echo "[$0] $1"
+}
+error () {
+
+	2>&1 msg "(E) $1"
+	exit 1
+}
+
+target_dir=$1
+
+msg "You sure you want to rm * ? y|[n]"
+
+read response
+if [ "$response" == "y" ]
+then
+	msg "De-escalating Enviroment"
+
+	umount -l $target_dir/dev{/shm,/pts,}
+	umount -R $target_dir{/proc,/sys}
+	rm -drf $target_dir/*
+fi

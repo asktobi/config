@@ -1,4 +1,8 @@
 #!/bin/bash
-# jon 2017
+# tjh
 # bin/surfapp
-surf -c ~/whatsapp/.cookie -F -S -b https://web.whatsapp.com
+cookiedir=~/whatsapp/cookie
+
+if [ ! -d ]
+
+surf -c $cookiedir -F -S -b https://web.whatsapp.com

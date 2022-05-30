@@ -1,0 +1,50 @@
+#!/bin/bash
+# jon 2021
+# bin/smnt
+# Secure File (system)
+
+# sfs [file]
+# sfs -c [file] [size]
+
+usage()
+{
+
+		2>&1 echo "[$(basename $0)] $1"
+		exit -1
+}
+
+
+if []
+
+set -e
+
+if [ -d "$1" ]
+then
+	usage "The file is already a direcory"
+fi
+
+if [[ -e "$1" && ! -d "$1" ]]
+then
+	mkdir "./$1.mount"
+	smnt "./$1.mount" $1 
+	exit $?	
+fi
+
+
+if [[ -e "$2" && "$1" == "-c" ]]
+then
+	usage "The file already exists"
+fi
+
+
+
+if [ "$1" == "-c" ]
+then 
+	
+	
+	file=$(realpath $1)
+	dev=$file.dev
+	dir=$file.dir
+	dd if=/dev/zero of=$1 bs=1 count=0 seek=$2
+	mkdir $dir
+	

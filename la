@@ -1,0 +1,43 @@
+#!/bin/bash
+# tjh        # Name of the original Creator
+# bin/la     # Filepath relative to ~ or / 
+# README     # Name of the Project
+
+# First Line reserved for Hashbang
+
+# Comments related to following code are ok but keep it breef
+# I want Documentation but readable variable names first
+
+ls -lah --color=auto $@
+
+# If you modify the spirit of the program you can rename
+# the project and you'll be the original creator
+# Following the license of Fenster
+
+# LICENCE
+# Keep the original files as is and supply patches if you want to publish
+# your Modifications. Renames are permitted and transfers Ownership of the
+# Resulting Modifications, but not the original code or other modifications
+# to the code, made to work with the code or made to make the code work.
+# Decoration, Comments and this Licence's have to be kept intact
+# in any Modifications published.
+# The modifications and original creations designed to 
+# work with this publification can only be sold on the 
+# system intern code store, more on soqad.onion
+# END LICENCE
+
+# A "Created by $ORIGINAL_CREATOR" should be added in case of a 
+# rename ill try to automate but unow also is not a
+# problem if you forget unless your one of those
+# companies in the fortune 50000 or something.
+# Also use a 2 to 5 letter abreviation instead of an actual name
+# tags -> fullname is extra file duno where i should put it atm
+
+# Modified by tag1 2019
+# Modified by tag2 2019
+# Modified by tag3 2020
+# At the end of the file gets added
+
+
+
+

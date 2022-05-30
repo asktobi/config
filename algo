@@ -1,0 +1,58 @@
+#!/bin/bash
+# tjh
+# Arch Linux Generate Order
+# algo [device]
+
+
+set -eu
+
+device=$1
+rlvm="$(cat /dev/urandom | tr -dc '[:alpha:]' | head -c 4)"
+rlvm=${rlvm^^}
+rpart="root"
+rpath="/dev/$rlvm/$rpart"
+
+rnew="$(mktemp -d)"
+
+
+echo "Device $device will be wiped you sure ? yes|(no)"
+
+read response
+
+if [ ! ${response^^} == "YES" ]
+then
+	echo "Device $device saved ! puh ..."
+	exit 1
+fi
+
+wipefs $device
+
+fdisk $device << EOF
+g
+n
+
+
++1G
+Y
+n
+
+
+
+Y
+w
+q
+EOF
+
+pool ${device}2 into $rlvm
+pool $rpart from $rlvm 7G
+
+mkfs.fat -F 32 ${device}1
+mkfs.btrfs -f -m dup -d single $rpath
+
+mkdir -p $rnew
+mount $rpath $rnew
+
+pacstrap $rnew base base-devel linux linux-firmware man-db man-pages texinfo lvm2 btrfs-progs vim
+
+
+

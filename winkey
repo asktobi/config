@@ -1,0 +1,6 @@
+#!/bin/bash
+# tjh
+# bin/winkey
+# Prints embeded Windows keys
+
+cat /sys/firmware/acpi/tables/MSDM

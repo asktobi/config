@@ -1,0 +1,7 @@
+#!/usr/bin/python -b
+
+from urllib.parse import urlparse as urllib_parse_urlparse
+
+protocol = urllib_parse_urlparse("http://4qworiptwkums2dvfa32iu6ze35nbrmjxybux5r65jbt6ukjtx7soqad.onion/f/pkgs")[0]
+
+print(protocol)

@@ -1,0 +1,14 @@
+#!/bin/bash
+# tjh
+# bin/geninit [root]
+
+set -eu
+
+init=$1
+
+if [ ! -d $init ]
+then
+	echo "Directory [$init] doesn't exist."
+	exit
+fi
+find $tmp -print0 | cpio --null --create --verbose --format=crc | xz -9 > $init.cpio.xz

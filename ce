@@ -1,0 +1,52 @@
+#!/bin/bash
+# tjh
+# Clean Enviroment
+# ce [tarball]
+
+set -eu
+
+msg () {
+	echo "[$0] $1"
+}
+error () {
+
+	2>&1 msg "(E) $1"
+	exit 1
+}
+
+if [ ! -e "$1" ] ; then error "Tarball not found"; else tarball="$1";fi
+
+target_dir=.ce
+mkdir $target_dir
+
+msg "Resources OK"
+msg "Unrolling Tarball"
+
+tar xpvf $tarball --xattrs-include='*.*' --numeric-owner -C $target_dir
+
+mkdir -p $target_dir/etc/portage/repos.conf
+cp $target_dir/usr/share/portage/config/repos.conf $target_dir/etc/portage/repos.conf/gentoo.conf
+
+msg "Default Repository's copied"
+
+
+cp --dereference /etc/resolv.conf $target_dir/etc/resolv.conf
+
+mount --types proc /proc $target_dir/proc
+mount --rbind /sys $target_dir/sys
+mount --make-rslave $target_dir/sys
+mount --rbind /dev $target_dir/dev
+mount --make-rslave $target_dir/dev 
+
+msg "Enviroment Setup OK"
+msg "Chrooting ..."
+
+
+chroot $target_dir /bin/bash
+
+msg "De-escalating Enviroment"
+
+umount -l $target_dir/dev{/shm,/pts,}
+umount -R $target_dir{/proc,/sys}
+rm -drf $target_dir/*
+

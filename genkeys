@@ -1,0 +1,47 @@
+#!/bin/bash
+# tjh
+# bin/genkeys [keyring]
+# Generate a new gnupg key
+
+if [ "$1" == "" ]
+then
+	GNUPGHOME="$HOME/.gnupg"
+fi
+
+if [ -d "$1" ]
+then
+	
+	if [ ! -d "$1/.gnupg" ]
+	then
+		mkdir -p "$1/.gnupg"
+	fi
+	export GNUPGHOME="$1/.gnupg"
+else
+	mkdir -p "$1"
+	export GNUPGHOME="$1"
+fi
+
+tmp="$(mktemp)"
+chmod 600 $tmp
+mkdir -p $GNUPGHOME 
+touch $GNUPGHOME/pass
+chmod 600 $GNUPGHOME/pass
+password="$(openssl rand -base64 32)"
+echo "${password}" > $GNUPGHOME/pass
+cat > $tmp << EOF
+	%echo Generating Keys
+	Key-Type: default
+	Subkey-Type: default
+	Name-Real: NAME
+	Name-Comment: signing only
+	Name-Email: u@s
+	Expire-Date: 0
+	Passphrase: ${password}
+	%commit
+	%echo done
+EOF
+
+$EDITOR $tmp
+gpg --batch --generate-key $tmp 
+rm -f $tmp
+

@@ -1,0 +1,6 @@
+#!/bin/bash
+# tjh
+# bin/pulsedroid
+
+pacmd list-sources
+pactl load-module module-simple-protocol-tcp rate=48000 format=s16le channels=2 source= alsa_input.usb-Turtle_Beach_Turtle_Beach_PX22_000000001-00.analog-stereo record=true port=8787 listen=192.168.1.2

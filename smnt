@@ -1,5 +1,5 @@
 #!/bin/bash
-# jon 2021
+# tjh
 # bin/smnt
 # Make Secure Mirrored Device
 
@@ -78,7 +78,7 @@ sync
 umount $mntpnt
 cryptsetup close $crypt_dev0
 
-if [ ! "" == "$crypt_dev1" ]
+if [ -e "$device1" ]
 then
 	cryptsetup close $crypt_dev1
 fi

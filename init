@@ -1,0 +1,22 @@
+#!/usr/bin/tcc -run
+# tjh
+# bin/init
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <libpg.h>
+
+static char pghost = "localhost";
+static char pgport = "9696";
+static char pgoptions = "";
+static char pgtty = "";
+static char dbName = "init";
+
+
+
+int main()
+{
+	PGconn *PQsetdb(&pghost,&pgport,&pgoptions,&pgtty,&dbName);
+	
+
+}

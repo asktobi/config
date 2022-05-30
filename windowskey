@@ -1,4 +1,0 @@
-#!/bin/bash
-# jon 2021
-# bin/windowskey
-cat /sys/firmware/acpi/tables/MSDM

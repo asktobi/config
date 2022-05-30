@@ -1,6 +1,10 @@
 #!/bin/bash
-# jon 2021
+# tjh
 # bin/yt
+# Video/Music Downloder
+
+# yt [directory/music] 
+# yt [directory/music] [url] 
 
 set -e
 

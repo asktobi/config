@@ -1,0 +1,21 @@
+#!/bin/bash
+
+export PGDATA="$HOME/.cache/pg"
+export PGUSER="$USER"
+export PGHOST="localhost"
+export PGPORT="9696"
+
+if [ ! -e "$PGDATA/postgresql.conf" ]
+then
+	mkdir -p $PGDATA
+	initdb
+	echo "unix_socket_directories = ''" >> $PGDATA/postgresql.conf
+	echo "listen_addresses = '$PGHOST'" >> $PGDATA/postgresql.conf
+	echo "port = '$PGPORT'" >> $PGDATA/postgresql.conf
+fi
+
+postgres -D $PGDATA &
+
+sleep 5
+
+psql -h $PGHOST -p $PGPORT
